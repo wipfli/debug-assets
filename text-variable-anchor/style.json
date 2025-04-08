@@ -11699,9 +11699,10 @@
                     [
                         "literal",
                         [
-                            "bottom",
-                            "left",
-                            "right"
+                            "bottom-left",
+                            "top-left",
+                            "bottom-right",
+                            "top-right"
                         ]
                     ],
                     8,
@@ -11712,7 +11713,15 @@
                         ]
                     ]
                 ],
-                "text-radial-offset": 0.3
+                "text-radial-offset": [
+                    "step",
+                    [
+                        "zoom"
+                    ],
+                    0.1,
+                    6,
+                    0
+                ]
             },
             "paint": {
                 "text-color": "#5c5c5c",
