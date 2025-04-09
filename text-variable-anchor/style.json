@@ -11699,10 +11699,10 @@
                     [
                         "literal",
                         [
-                            "bottom-left",
-                            "top-left",
-                            "bottom-right",
-                            "top-right"
+                            "bottom",
+                            "left",
+                            "right",
+                            "top"
                         ]
                     ],
                     8,
@@ -11713,15 +11713,7 @@
                         ]
                     ]
                 ],
-                "text-radial-offset": [
-                    "step",
-                    [
-                        "zoom"
-                    ],
-                    0.1,
-                    6,
-                    0
-                ]
+                "text-radial-offset": 0.3
             },
             "paint": {
                 "text-color": "#5c5c5c",
