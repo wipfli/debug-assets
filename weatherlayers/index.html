@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeatherLayers</title>
+    <script src="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/deck.gl@9.1.4/dist/dist.dev.js"></script>
+    <script src="https://unpkg.com/weatherlayers-gl@2025.5.0/dist/weatherlayers-client.umd.min.js"></script>
+    <script src="https://unpkg.com/weatherlayers-gl@2025.5.0/dist/weatherlayers-deck.umd.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+
+    <script type="module">
+
+        window.addEventListener('DOMContentLoaded', async () => {
+
+            const map = window.map = new maplibregl.Map({
+                container: 'map',
+                style: 'https://demotiles.maplibre.org/style.json',
+                center: [9, 47],
+                zoom: 7,
+                hash: 'map',
+            });
+            await new Promise(resolve => map.once('style.load', resolve));
+
+            const deckLayer = new deck.MapboxOverlay({
+                interleaved: true,
+                layers: [],
+            });
+            map.addControl(deckLayer);
+
+            function waitForDeck(getDeck) {
+                return new Promise(resolve => {
+                    function wait() {
+                        const deck = getDeck();
+                        if (deck && deck.getCanvas()) {
+                            resolve(deck);
+                        } else {
+                            setTimeout(wait, 100);
+                        }
+                    }
+                    wait();
+                });
+            }
+            const deckgl = window.deckgl = await waitForDeck(() => deckLayer._deck);
+
+            const imageUrl = 'wind.png';
+            const image = await WeatherLayers.loadTextureData(imageUrl);
+            const imageUnscale = [-128, 127];
+
+            const bounds = [5.379263587935693, 45.497280246347316, 11.0242973, 48.1058362];
+
+            deckLayer.setProps({
+                layers: [
+                    new WeatherLayers.RasterLayer({
+                        id: 'raster',
+                        // data properties
+                        image,
+                        image2: null,
+                        imageSmoothing: 0,
+                        imageInterpolation: WeatherLayers.ImageInterpolation.CUBIC,
+                        imageWeight: 0,
+                        imageType: WeatherLayers.ImageType.VECTOR,
+                        imageUnscale,
+                        imageMinValue: null,
+                        imageMaxValue: null,
+                        bounds,
+                        // style properties
+                        visible: true,
+                        palette: [
+                            [0, [127, 127, 255]],
+                            [5, [127, 255, 255]],
+                            [10, [127, 255, 127]],
+                            [15, [255, 255, 127]],
+                            [20, [255, 127, 127]],
+                            [25, [127, 0, 0]],
+                        ],
+                        opacity: 1.0,
+                        pickable: true,
+                        extensions: [new deck.ClipExtension()],
+                        clipBounds: [-5, 45, 12, 49],
+                        // beforeId: BASEMAP_VECTOR_LAYER_BEFORE_ID,
+                    }),
+                    new WeatherLayers.ParticleLayer({
+                        id: 'particle',
+                        // data properties
+                        image,
+                        image2: null,
+                        imageSmoothing: 0,
+                        imageInterpolation: WeatherLayers.ImageInterpolation.CUBIC,
+                        imageWeight: 0,
+                        imageType: WeatherLayers.ImageType.VECTOR,
+                        imageUnscale,
+                        imageMinValue: 0,
+                        imageMaxValue: 30,
+                        bounds,
+                        // style properties
+                        visible: true,
+                        numParticles: 2000,
+                        maxAge: 10,
+                        speedFactor: 5,
+                        width: 2,
+                        color: [0, 0, 0],
+                        palette: null,
+                        opacity: 0.7,
+                        animate: true,
+                        extensions: [new deck.ClipExtension()],
+
+                        //   5.379263587935693 48.1058362 \
+                        //   11.0242973 45.497280246347316 \
+                        clipBounds: [-5, 45, 12, 49],
+                        getPolygonOffset: () => [0, -1000],
+                        // beforeId: BASEMAP_VECTOR_LAYER_BEFORE_ID,
+                    }),
+                ],
+            });
+
+        });
+    </script>
+</body>
+
+</html>
