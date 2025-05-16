@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeatherLayers</title>
+    <script src="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@5.5.0/dist/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://unpkg.com/deck.gl@9.1.4/dist/dist.dev.js"></script>
+    <script src="https://unpkg.com/weatherlayers-gl@2025.5.0/dist/weatherlayers-client.umd.min.js"></script>
+    <script src="https://unpkg.com/weatherlayers-gl@2025.5.0/dist/weatherlayers-deck.umd.min.js"></script>
+    <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+
+        .center-marker {
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .marker-dot {
+            width: 4px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            position: relative;
+            /* container for the absolutely positioned label */
+        }
+
+        .marker-label {
+            position: absolute;
+            bottom: 10px;
+            /* space below the dot */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: black;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2px 6px;
+            border-radius: 4px;
+            user-select: none;
+            font-family: sans-serif;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map">
+    </div>
+    <div class="center-marker">
+        <div id="centerLabel" class="marker-label">Loading…</div>
+        <div class="marker-dot"></div>
+    </div>
+    <script type="module">
+        window.addEventListener('DOMContentLoaded', async () => {
+
+            const protocol = new pmtiles.Protocol();
+            maplibregl.addProtocol('pmtiles', protocol.tile);
+            const map = window.map = new maplibregl.Map({
+                container: 'map',
+                style: 'style-white.json',
+                center: [8.2, 46.8],
+                zoom: 8,
+                hash: 'map',
+            });
+            await new Promise(resolve => map.once('style.load', resolve));
+
+            const deckLayer = new deck.MapboxOverlay({
+                interleaved: true,
+                layers: [],
+            });
+            map.addControl(deckLayer);
+
+            function waitForDeck(getDeck) {
+                return new Promise(resolve => {
+                    function wait() {
+                        const deck = getDeck();
+                        if (deck && deck.getCanvas()) {
+                            resolve(deck);
+                        } else {
+                            setTimeout(wait, 100);
+                        }
+                    }
+                    wait();
+                });
+            }
+            const deckgl = window.deckgl = await waitForDeck(() => deckLayer._deck);
+
+            const imageUrl = 'wind.png';
+            const image = await WeatherLayers.loadTextureData(imageUrl);
+            const imageUnscale = [-128, 127];
+
+            const bounds = [5.379263587935693, 45.497280246347316, 11.0242973, 48.1058362];
+
+            deckLayer.setProps({
+                layers: [
+                    new WeatherLayers.RasterLayer({
+                        id: 'raster',
+                        // data properties
+                        image,
+                        image2: null,
+                        imageSmoothing: 0,
+                        imageInterpolation: WeatherLayers.ImageInterpolation.CUBIC,
+                        imageWeight: 0,
+                        imageType: WeatherLayers.ImageType.VECTOR,
+                        imageUnscale,
+                        imageMinValue: null,
+                        imageMaxValue: null,
+                        bounds,
+                        // style properties
+                        visible: true,
+                        palette: [
+                            [1.852 * 2, [255, 255, 255]],
+                            [1.852 * 5, [239, 244, 209]],
+                            [1.852 * 7.5, [232, 244, 158]],
+                            [1.852 * 12, [170, 206, 99]],
+                            [1.852 * 16, [170, 206, 99]],
+                            [1.852 * 20, [226, 237, 22]],
+                            [1.852 * 24, [255, 237, 0]],
+                            [1.852 * 28, [255, 237, 130]],
+                            [1.852 * 32.5, [244, 209, 127]],
+                            [1.852 * 37.5, [237, 165, 73]],
+                            [1.852 * 42.5, [229, 140, 61]],
+                            [1.852 * 47.5, [219, 124, 61]],
+                            // [0, [127, 127, 255]],
+                            // [5, [127, 255, 255]],
+                            // [10, [127, 255, 127]],
+                            // [15, [255, 255, 127]],
+                            // [20, [255, 127, 127]],
+                            // [25, [127, 0, 0]],
+                        ],
+                        opacity: 0.9,
+                        pickable: true,
+                        extensions: [new deck.ClipExtension()],
+                        clipBounds: [-5, 45, 12, 49],
+                        beforeId: 'boundaries_country'
+                    }),
+                    new WeatherLayers.ParticleLayer({
+                        id: 'particle',
+                        // data properties
+                        image,
+                        image2: null,
+                        imageSmoothing: 0,
+                        imageInterpolation: WeatherLayers.ImageInterpolation.CUBIC,
+                        imageWeight: 0,
+                        imageType: WeatherLayers.ImageType.VECTOR,
+                        imageUnscale,
+                        // imageMinValue: -128,
+                        // imageMaxValue: 127,
+                        bounds,
+                        // style properties
+                        visible: true,
+                        numParticles: Math.round(100 * window.innerWidth * window.innerHeight / 300000),
+                        maxAge: 15,
+                        speedFactor: 8,
+                        width: 2.5,
+                        color: [255, 255, 255],
+                        palette: null,
+                        opacity: 1.0,
+                        animate: true,
+                        extensions: [new deck.ClipExtension()],
+
+                        //   5.379263587935693 48.1058362 \
+                        //   11.0242973 45.497280246347316 \
+                        clipBounds: [-5, 45, 12, 49],
+                        getPolygonOffset: () => [0, -1000],
+                        beforeId: "boundaries_country",
+                    }),
+                ],
+            });
+
+            const updateMarker = () => {
+                const imageProperties = {
+                    image,
+                    image2: null,
+                    imageSmoothing: 0,
+                    imageInterpolation: WeatherLayers.ImageInterpolation.CUBIC,
+                    imageWeight: 0,
+                    imageType: WeatherLayers.ImageType.VECTOR,
+                    imageUnscale,
+                }
+                const bbox = [-5, 45, 12, 49];
+                const center = map.getCenter();
+                const topLeft = map.unproject([0, 0]);
+                const points = [[center.lng, (center.lat + topLeft.lat) / 2]]
+                const collection = WeatherLayers.getRasterPoints(imageProperties, bounds, points);
+                const properties = collection['features'][0]['properties'];
+                document.getElementById('centerLabel').textContent = `${properties.value.toFixed(1)} km/h`;
+            }
+            updateMarker();
+            map.on('move', updateMarker);
+            map.dragRotate.disable();     
+            map.touchZoomRotate.disableRotation();
+            map.keyboard.disableRotation();
+            map.setPitch(0);
+            map.setBearing(0);
+        });
+    </script>
+</body>
+
+</html>
