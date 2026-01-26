@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.16.0/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@5.16.0/dist/maplibre-gl.js'></script>
+    <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        html, body, #map { height: 100%; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    const protocol = new pmtiles.Protocol();
+    maplibregl.addProtocol('pmtiles', protocol.tile);
+
+    const map = new maplibregl.Map({
+        container: 'map',
+        zoom: 4,
+        center: [11.11, 46.71],
+        style: 'style.json?v3',
+        hash: 'map',
+    });
+
+    const center = turf.point([6.130491, 49.077807]);
+    const textForNumber = ['0th', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', 
+        '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th', '18th', 
+        '19th', '20th', '21st', '22nd', '23rd', '24th'];
+
+    map.on('load', async () => {
+        const request = await fetch('gb2025.geojson');
+        const gb2025 = await request.json();
+
+        for (const feature of gb2025['features']) {
+            const location = turf.point(feature['geometry']['coordinates'].at(-1));
+            const distance = turf.distance(location, center, {units: 'meters'});
+            feature['properties']['distance'] = distance;
+        }
+        gb2025['features'].sort((a, b) => {
+            return a['properties']['distance'] - b['properties']['distance'];
+        });
+        for (let i = 0; i < gb2025['features'].length; ++i) {
+            gb2025['features'][i]['properties']['rank'] = gb2025['features'].length - i;
+        }
+        map.getSource('balloons').setData(gb2025);
+
+        map.on('click', 'balloon-lines-click', (e) => {
+            const name = e.features[0]['properties']['name'];
+            const feature = gb2025['features'].find(feature => feature['properties']['name'] === name);
+
+            const radius = feature['properties']['distance'];
+            const circle = turf.ellipse(center, radius, radius, {
+                steps: 512,
+                units: 'meters',
+            });
+            circle['properties']['label'] = `${name}  ${(radius / 1000).toFixed(2)} km  (${textForNumber[feature['properties']['rank']]})`;
+            map.getSource('circle').setData(circle);
+            map.getSource('selected-balloon').setData(feature);
+        });
+
+        map.on('mouseenter', 'balloon-lines-click', (e) => {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'balloon-lines-click', (e) => {
+            map.getCanvas().style.cursor = '';
+        });
+    })
+</script>
+</body>
+</html>

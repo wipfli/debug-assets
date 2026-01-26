@@ -1,0 +1,198 @@
+{
+    "version": 8,
+    "projection": {
+        "type": "vertical-perspective"
+    },
+    "sources": {
+        "planetarble": {
+            "type": "raster",
+            "url": "https://tiles.swiss-map.cc/planet_2024_8z.json",
+            "attribution": "Landsat, NOAA"
+        },
+        "sentinel2": {
+            "type": "raster",
+            "url": "pmtiles://https://protomaps-s2-tileset.s3.us-west-2.amazonaws.com/earthgenome_v2.pmtiles",
+            "attribution": "Sentinel-2"
+        },
+        "restricted-area-1": {
+            "type": "geojson",
+            "data": "restricted-area-1.geojson"
+        },
+        "restricted-area-2": {
+            "type": "geojson",
+            "data": "restricted-area-2.geojson"
+        },
+        "restricted-area-3": {
+            "type": "geojson",
+            "data": "restricted-area-3.geojson"
+        },
+        "balloons": {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": []
+            }
+        },
+        "selected-balloon": {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": []
+            }
+        },
+        "circle": {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": []
+            }
+        }
+    },
+    "layers": [
+        {
+            "id": "planetarble",
+            "source": "planetarble",
+            "type": "raster"
+        },
+        {
+            "id": "sentinel2",
+            "source": "sentinel2",
+            "type": "raster",
+            "minzoom": 8
+        },
+        {
+            "id": "restricted-area-1-fill",
+            "source": "restricted-area-1",
+            "type": "fill",
+            "paint": {
+                "fill-color": "rgba(255, 0, 0, 0.2)"
+            }
+        },
+        {
+            "id": "restricted-area-1-line",
+            "source": "restricted-area-1",
+            "type": "line",
+            "paint": {
+                "line-color": "rgba(255, 0, 0, 0.7)",
+                "line-width": 2
+            }
+        },
+        {
+            "id": "restricted-area-2-fill",
+            "source": "restricted-area-2",
+            "type": "fill",
+            "paint": {
+                "fill-color": "rgba(255, 0, 0, 0.2)"
+            }
+        },
+        {
+            "id": "restricted-area-2-line",
+            "source": "restricted-area-2",
+            "type": "line",
+            "paint": {
+                "line-color": "rgba(255, 0, 0, 0.7)",
+                "line-width": 2
+            }
+        },
+        {
+            "id": "restricted-area-3-fill",
+            "source": "restricted-area-3",
+            "type": "fill",
+            "paint": {
+                "fill-color": "rgba(255, 0, 0, 0.2)"
+            }
+        },
+        {
+            "id": "restricted-area-3-line",
+            "source": "restricted-area-3",
+            "type": "line",
+            "paint": {
+                "line-color": "rgba(255, 0, 0, 0.7)",
+                "line-width": 2
+            }
+        },
+        {
+            "id": "balloon-lines-click",
+            "source": "balloons",
+            "type": "line",
+            "paint": {
+                "line-opacity": 0.0,
+                "line-width": 25
+            }
+        },
+        {
+            "id": "balloon-lines",
+            "source": "balloons",
+            "type": "line",
+            "paint": {
+                "line-color": ["get", "color"],
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    4,
+                    1,
+                    8,
+                    2.5,
+                    11,
+                    4
+                ],
+                "line-opacity": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    8,
+                    0.7,
+                    11,
+                    1.0
+                ]
+            }
+        },
+        {
+            "id": "circle",
+            "source": "circle",
+            "type": "line",
+            "paint": {
+                "line-color": "rgba(255, 255, 255, 0.7)",
+                "line-width": 2
+            }
+        },
+        {
+            "id": "selected-balloon-line",
+            "source": "selected-balloon",
+            "type": "line",
+            "paint": {
+                "line-color": ["get", "color"],
+                "line-width": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    4,
+                    4,
+                    8,
+                    6.5,
+                    11,
+                    8
+                ],
+                "line-opacity": 1.0
+            }
+        },
+        {
+            "id": "circle-label",
+            "source": "circle",
+            "type": "symbol",
+            "layout": {
+                "text-field": ["get", "label"],
+                "text-font": ["Noto Sans Regular"],
+                "symbol-placement": "line",
+                "text-offset": [0, 0.7]
+            },
+            "paint": {
+                "text-color": "white",
+                "text-halo-color": "rgba(0, 0, 0, 0.7)",
+                "text-halo-width": 2
+            }
+        }
+    ],
+    "glyphs": "https://protomaps.github.io/basemaps-assets/fonts/{fontstack}/{range}.pbf"
+}
