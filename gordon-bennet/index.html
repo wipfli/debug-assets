@@ -40,7 +40,22 @@
         '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th', '18th', 
         '19th', '20th', '21st', '22nd', '23rd', '24th'];
 
+    function getOrSetFovInUrl(defaultFov = 36.87) {
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
+        let fov = params.get('fov');
+        if (fov === null || isNaN(parseFloat(fov))) {
+            fov = defaultFov;
+            params.set('fov', fov);
+            window.history.replaceState({}, '', `${url.pathname}?${params.toString()}${url.hash}`);
+        } else {
+            fov = parseFloat(fov);
+        }
+        return fov;
+    }
+
     map.on('load', async () => {
+        map.setVerticalFieldOfView(getOrSetFovInUrl());
         const request = await fetch('gb2025.geojson');
         const gb2025 = await request.json();
 
