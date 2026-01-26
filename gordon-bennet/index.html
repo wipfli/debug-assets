@@ -26,6 +26,15 @@
         hash: 'map',
     });
 
+    map.addControl(new maplibregl.NavigationControl({
+        visualizePitch: true,
+        visualizeRoll: true,
+        showZoom: true,
+        showCompass: true
+    }));
+
+    map.addControl(new maplibregl.GlobeControl());
+
     const center = turf.point([6.130491, 49.077807]);
     const textForNumber = ['0th', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', 
         '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th', '17th', '18th', 
