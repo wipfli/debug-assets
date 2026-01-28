@@ -5,6 +5,7 @@
       "type": "Feature",
       "properties": {
         "name": "POL-2",
+        "icon-image": "PL",
         "times": [
           "2025-09-04T09:06:29Z",
           "2025-09-04T09:30:00Z",
@@ -1711,6 +1712,7 @@
       "type": "Feature",
       "properties": {
         "name": "POL-1",
+        "icon-image": "PL",
         "times": [
           "2025-09-04T09:05:22Z",
           "2025-09-04T09:30:00Z",
@@ -5163,6 +5165,7 @@
       "type": "Feature",
       "properties": {
         "name": "LTU-1",
+        "icon-image": "LT",
         "times": [
           "2025-09-04T08:42:30Z",
           "2025-09-04T09:00:00Z",
@@ -7007,6 +7010,7 @@
       "type": "Feature",
       "properties": {
         "name": "ITA-1",
+        "icon-image": "IT",
         "times": [
           "2025-09-04T08:38:35Z",
           "2025-09-04T09:00:00Z",
@@ -9715,6 +9719,7 @@
       "type": "Feature",
       "properties": {
         "name": "GBR-3",
+        "icon-image": "GB",
         "times": [
           "2025-09-04T09:06:05Z",
           "2025-09-04T09:30:00Z",
@@ -12615,6 +12620,7 @@
       "type": "Feature",
       "properties": {
         "name": "GBR-2",
+        "icon-image": "GB",
         "times": [
           "2025-09-04T09:06:35Z",
           "2025-09-04T09:30:00Z",
@@ -17105,6 +17111,7 @@
       "type": "Feature",
       "properties": {
         "name": "GBR-1",
+        "icon-image": "GB",
         "times": [
           "2025-09-04T08:38:23Z",
           "2025-09-04T09:00:00Z",
@@ -18865,6 +18872,7 @@
       "type": "Feature",
       "properties": {
         "name": "BEL-3",
+        "icon-image": "BE",
         "times": [
           "2025-09-04T09:04:58Z",
           "2025-09-04T09:30:00Z",
@@ -20607,6 +20615,7 @@
       "type": "Feature",
       "properties": {
         "name": "BEL-2",
+        "icon-image": "BE",
         "times": [
           "2025-09-04T08:40:34Z",
           "2025-09-04T09:00:00Z",
@@ -21239,6 +21248,7 @@
       "type": "Feature",
       "properties": {
         "name": "BEL-1",
+        "icon-image": "BE",
         "times": [
           "2025-09-04T08:39:35Z",
           "2025-09-04T09:00:00Z",
@@ -24751,6 +24761,7 @@
       "type": "Feature",
       "properties": {
         "name": "USA-3",
+        "icon-image": "US",
         "times": [
           "2025-09-04T08:41:52Z",
           "2025-09-04T09:00:00Z",
@@ -27483,6 +27494,7 @@
       "type": "Feature",
       "properties": {
         "name": "USA-2",
+        "icon-image": "US",
         "times": [
           "2025-09-04T09:03:35Z",
           "2025-09-04T09:30:00Z",
@@ -30197,6 +30209,7 @@
       "type": "Feature",
       "properties": {
         "name": "USA-1",
+        "icon-image": "US",
         "times": [
           "2025-09-04T09:04:29Z",
           "2025-09-04T09:30:00Z",
@@ -33067,6 +33080,7 @@
       "type": "Feature",
       "properties": {
         "name": "SUI-2",
+        "icon-image": "CH",
         "times": [
           "2025-09-04T08:40:05Z",
           "2025-09-04T09:00:00Z",
@@ -36573,6 +36587,7 @@
       "type": "Feature",
       "properties": {
         "name": "SUI-1",
+        "icon-image": "CH",
         "times": [
           "2025-09-04T09:05:35Z",
           "2025-09-04T09:30:00Z",
@@ -41849,6 +41864,7 @@
       "type": "Feature",
       "properties": {
         "name": "GER-3",
+        "icon-image": "DE",
         "times": [
           "2025-09-04T09:03:35Z",
           "2025-09-04T09:05:05Z",
@@ -46819,6 +46835,7 @@
       "type": "Feature",
       "properties": {
         "name": "GER-2",
+        "icon-image": "DE",
         "times": [
           "2025-09-04T09:04:13Z",
           "2025-09-04T09:30:00Z",
@@ -51633,6 +51650,7 @@
       "type": "Feature",
       "properties": {
         "name": "GER-1",
+        "icon-image": "DE",
         "times": [
           "2025-09-04T08:42:22Z",
           "2025-09-04T09:00:00Z",
@@ -56765,6 +56783,7 @@
       "type": "Feature",
       "properties": {
         "name": "FRA-3",
+        "icon-image": "FR",
         "times": [
           "2025-09-04T08:39:52Z",
           "2025-09-04T09:00:00Z",
@@ -59581,6 +59600,7 @@
       "type": "Feature",
       "properties": {
         "name": "FRA-2",
+        "icon-image": "FR",
         "times": [
           "2025-09-04T08:41:05Z",
           "2025-09-04T09:00:00Z",
@@ -64473,6 +64493,7 @@
       "type": "Feature",
       "properties": {
         "name": "FRA-1",
+        "icon-image": "FR",
         "times": [
           "2025-09-04T09:05:30Z",
           "2025-09-04T09:30:00Z",
@@ -68723,6 +68744,7 @@
       "type": "Feature",
       "properties": {
         "name": "ESP-1",
+        "icon-image": "ES",
         "times": [
           "2025-09-04T08:41:34Z",
           "2025-09-04T09:00:00Z",
@@ -73291,6 +73313,7 @@
       "type": "Feature",
       "properties": {
         "name": "AUT-2",
+        "icon-image": "AT",
         "times": [
           "2025-09-04T09:04:35Z",
           "2025-09-04T09:30:00Z",
@@ -77697,6 +77720,7 @@
       "type": "Feature",
       "properties": {
         "name": "AUT-1",
+        "icon-image": "AT",
         "times": [
           "2025-09-04T08:42:04Z",
           "2025-09-04T09:00:00Z",

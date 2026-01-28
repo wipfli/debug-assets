@@ -67,10 +67,29 @@
         gb2025['features'].sort((a, b) => {
             return a['properties']['distance'] - b['properties']['distance'];
         });
+        const balloonPoints = {'type': 'FeatureCollection', 'features': []};
         for (let i = 0; i < gb2025['features'].length; ++i) {
             gb2025['features'][i]['properties']['rank'] = gb2025['features'].length - i;
+            balloonPoints['features'].push({
+                "type": "Feature",
+                "properties": {
+                    "icon-image": gb2025['features'][i]['properties']['icon-image'],
+                    "name": gb2025['features'][i]['properties']['name'],
+                },
+                "geometry": {
+                    "coordinates": gb2025['features'][i]['geometry']['coordinates'].at(-1),
+                    "type": "Point"
+                }
+            });
         }
+
+        for (const country of ['AT', 'BE', 'CH', 'DE', 'ES', 'FR', 'GB', 'IT', 'LT', 'PL', 'US']) {
+            const response = await map.loadImage(`icons/${country}.png`);
+            map.addImage(country, response.data);
+        }
+        map.getSource('balloon-points').setData(balloonPoints);
         map.getSource('balloons').setData(gb2025);
+        
 
         map.on('click', 'balloon-lines-click', (e) => {
             const name = e.features[0]['properties']['name'];
