@@ -17,7 +17,10 @@
 <script>
     const protocol = new pmtiles.Protocol();
     maplibregl.addProtocol('pmtiles', protocol.tile);
-
+    maplibregl.setRTLTextPlugin(
+        'https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.3.0/dist/mapbox-gl-rtl-text.js',
+        true // Lazy load the plugin
+    );
     const map = new maplibregl.Map({
         container: 'map',
         zoom: 4,
