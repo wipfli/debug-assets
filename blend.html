@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.21.1/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@5.21.1/dist/maplibre-gl.js'></script>
+    <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body,
+        #map {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+
+        const protocol = new pmtiles.Protocol();
+        maplibregl.addProtocol('pmtiles', protocol.tile);
+
+        const map = new maplibregl.Map({
+            container: 'map',
+            hash: 'map',
+            style: {
+                'version': 8,
+                'sources': {
+                    "sentinel2": {
+                        "type": "raster",
+                        "url": "pmtiles://https://protomaps-s2-tileset.s3.us-west-2.amazonaws.com/earthgenome_v2.pmtiles",
+                        "attribution": "Sentinel-2"
+                    },
+                    "swissimage": {
+                        "type": "raster",
+                        "tiles": ["https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"],
+                        "tileSize": 256,
+                        "minzoom": 0,
+                        "maxzoom": 20,
+                        "attribution": "Swisstopo"
+                    },
+                    "planetarble": {
+                        "type": "raster",
+                        "url": "https://tiles.swiss-map.cc/planet_2024_8z.json",
+                        "attribution": "Landsat, NOAA"
+                    },
+                },
+                'layers': [
+                    {
+                        "id": "planetarble",
+                        "source": "planetarble",
+                        "type": "raster",
+                        "paint": {
+                            "raster-resampling": 'linear'
+                        }
+                    },
+                    {
+                        "id": "sentinel2",
+                        "source": "sentinel2",
+                        "type": "raster",
+                        "minzoom": 7,
+                        "paint": {
+                            "raster-resampling": 'linear'
+                        }
+                    },
+                    {
+                        "id": "swissimage",
+                        "type": "raster",
+                        "source": "swissimage",
+                        "layout": {
+                            "visibility": "visible"
+                        },
+                        "minzoom": 10,
+                        "paint": {
+                            'raster-opacity': [
+                                "step",
+                                ["zoom"],
+                                0.0, 9, 0.1, 10, 0.25, 11, 0.5, 12, 0.75, 13, 0.9, 14, 1.0
+                            ]
+                        }
+                    },
+                ],
+                'id': 'blank'
+            },
+            center: [8, 47],
+            zoom: 6
+        });
+    </script>
+</body>
+
+</html>
